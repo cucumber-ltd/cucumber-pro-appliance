@@ -30,7 +30,7 @@ chmod 600 common/coreos
 The IP address of the machine should display above the login prompt.
 
 ```
-ssh -i common/coreos.pub core@<IP>
+ssh -i common/coreos core@<IP>
 ```
 
 ### Configuration
