@@ -29,5 +29,11 @@
 
             "shutdown_command": "sudo shutdown now"
         }
+    ],
+    "post-processors": [
+        {
+            "type": "compress",
+            "output": "coreos.tar.gz"
+        }
     ]
 }
