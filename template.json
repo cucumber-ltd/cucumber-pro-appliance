@@ -33,7 +33,8 @@
     "post-processors": [
         {
             "type": "compress",
-            "output": "coreos.tar.gz"
+            "output": "coreos.tar.gz",
+            "keep_input_artifact": true
         }
     ]
 }
