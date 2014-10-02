@@ -19,6 +19,20 @@ packer build template.json
 
 This will provide you with a compressed archive of the VM.
 
+### SSH into the box
+
+First, change permissions on the private key (git won't store this):
+
+```sh
+chmod 600 common/coreos
+```
+
+The IP address of the machine should display above the login prompt.
+
+```
+ssh -i common/coreos.pub core@<IP>
+```
+
 ### Configuration
 
 Once you have a Core OS image, you need to provide the cluster configuration.
