@@ -39,9 +39,8 @@
         "destination": "images"
       },
       {
-        "type": "file",
-        "source": "scripts",
-        "destination": "scripts"
+        "type": "shell",
+        "script": "scripts/enable-docker-containers.sh"
       }
     ]
 }
