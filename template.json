@@ -27,14 +27,21 @@
             "ssh_username": "core",
             "ssh_key_path": "common/coreos",
 
-            "shutdown_command": "sudo shutdown now"
+            "shutdown_command": "sudo shutdown now",
+
+            "disk_size": 80000
         }
     ],
-    "post-processors": [
-        {
-            "type": "compress",
-            "output": "coreos.tar.gz",
-            "keep_input_artifact": true
-        }
+    "provisioners": [
+      {
+        "type": "file",
+        "source": "images",
+        "destination": "images"
+      },
+      {
+        "type": "file",
+        "source": "scripts",
+        "destination": "scripts"
+      }
     ]
 }

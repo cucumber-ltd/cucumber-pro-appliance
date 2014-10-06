@@ -74,6 +74,23 @@ rm -r /tmp/new-drive
 (`mkisofs` is in Homebrew for OS X under `cdrtools`. An equivalent fork is
 available for Debian/Ubuntu as `genisoimage`. [See here][].)
 
+### TODO
+
+The docker images are big, so we want to upload them to the machine as part of the
+provisioning process. We have a Makefile that can pull them down on the host,
+and then they can be uploaded in `template.json`.
+
+The problem is that we're getting an error when we're trying to `docker load` the
+images. Maybe the solution is in here somewhere:
+
+* https://coreos.com/docs/cluster-management/setup/mounting-storage/
+* https://coreos.com/docs/launching-containers/building/customizing-docker/
+* https://coreos.com/docs/running-coreos/platforms/vmware/
+
+For now we can work around it by SSHing into the box and run:
+
+    scripts/enable-docker-containers.sh
+
 ### Running
 
 The next stage is to import it into your VM host. You also need to mount the
