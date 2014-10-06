@@ -74,6 +74,10 @@ rm -r /tmp/new-drive
 (`mkisofs` is in Homebrew for OS X under `cdrtools`. An equivalent fork is
 available for Debian/Ubuntu as `genisoimage`. [See here][].)
 
+### Question
+
+- Why pulling down CoreOS twice?? Once by packer and once in coreos-install. Is it upgrading? Configuring?
+
 ### TODO
 
 The docker images are big, so we want to upload them to the machine as part of the
