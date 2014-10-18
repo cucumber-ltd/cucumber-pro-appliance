@@ -4,14 +4,10 @@
 #
 set -e pipefail
 
+# Just print some status
 docker --version
-# Remove all images to avoid weird btrfs-related bug
 docker images -a -q | xargs docker rmi || true
 docker info
-
-# We'll install metarepo the old way for now. Work around btrfs bug.
-#rm -rf images/metarepo.tar.gz
-#docker pull quay.io/cucumberltd/metarepo:5756343f648c362e9c5a475e3ba5e0499df7844b
 
 for f in images/*.tar.gz
 do
