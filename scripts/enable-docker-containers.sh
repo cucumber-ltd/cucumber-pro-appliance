@@ -12,10 +12,10 @@ docker info
 for f in images/*.tar.gz
 do
   echo "Loading $f image into docker"
-  gunzip -c $f | nice -n 20 docker load
+  gunzip -c $f | docker load
   name=`basename $f | sed s/.tar.gz$//`
   service=/etc/systemd/system/docker-$name.service
   sudo systemctl enable $service
   rm $f
-  echo "Done loading $f. Sleep to help btrfs..."
+  echo "Done loading $f."
 done
