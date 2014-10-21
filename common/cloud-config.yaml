@@ -72,13 +72,15 @@ coreos:
       [Install]
       WantedBy=multi-user.target
   - name: docker-metarepo.service
+    command: start
+    enable: false
     content: |
       [Unit]
       Description=Metarepo
-      After=postgres.service
-      After=mongo.service
-      Requires=postgres.service
-      Requires=mongo.service
+      After=docker-postgres.service
+      After=docker-mongo.service
+      Requires=docker-postgres.service
+      Requires=docker-mongo.service
 
       [Service]
       TimeoutStartSec=0
@@ -86,7 +88,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill metarepo
       ExecStartPre=-/usr/bin/docker rm metarepo
-      ExecStart=/home/core/images/start-metarepo.sh 5756343f648c362e9c5a475e3ba5e0499df7844b
+      ExecStart=/home/core/images/start-metarepo.sh 5756343f648c362e9c5a475e3ba5e0499df7844b.squash
 
       [Install]
       WantedBy=multi-user.target

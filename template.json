@@ -1,19 +1,4 @@
 {
-  "provisioners": [
-    {
-      "destination": "images",
-      "source": "images",
-      "type": "file"
-    },
-    {
-      "inline": "chmod +x images/*.sh",
-      "type": "shell"
-    },
-    {
-      "script": "scripts/enable-docker-containers.sh",
-      "type": "shell"
-    }
-  ],
   "builders": [
     {
       "shutdown_command": "sudo shutdown now",
@@ -37,6 +22,21 @@
       "iso_checksum_type": "sha512",
       "http_directory": "common",
       "boot_wait": "30s"
+    }
+  ],
+  "provisioners": [
+    {
+      "destination": "images",
+      "source": "images",
+      "type": "file"
+    },
+    {
+      "inline": "chmod +x images/*.sh",
+      "type": "shell"
+    },
+    {
+      "script": "scripts/enable-docker-containers.sh",
+      "type": "shell"
     }
   ]
 }
