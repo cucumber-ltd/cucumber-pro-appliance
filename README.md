@@ -6,6 +6,7 @@ It builds a machine running [Core OS][] with several [Docker][] images pre-insta
 ## Requirements
 
 * [Docker][] >= 1.2.0
+  * On OS X, use https://github.com/boot2docker/osx-installer/releases
 * [Packer][] >= 0.7.1
 * [VMWare][] Fusion >= 7.0.0
 
