@@ -1,40 +1,42 @@
 {
-    "builders": [
-        {
-            "name": "coreos",
-            "type": "vmware-iso",
-
-            "headless": false,
-
-            "iso_url": "http://stable.release.core-os.net/amd64-usr/410.1.0/coreos_production_iso_image.iso",
-            "iso_checksum": "b1adfb0d2f71f4ac95e1b8e122b55bbb741355ec743a1141506eb0ebdc4e7e1317d927e0cd37bfe3d9dfed408a3ac19843c7faefb1b05a03eff21098113267cd",
-            "iso_checksum_type": "sha512",
-
-            "http_directory": "common",
-
-            "boot_wait": "30s",
-            "boot_command": [
-                "sudo systemctl stop sshd.socket<return>",
-                "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/coreos.pub<return>",
-                "cat coreos.pub > .ssh/authorized_keys<return>",
-                "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/coreos-install<return>",
-                "chmod +x ./coreos-install<return>",
-                "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/cloud-config.yaml<return>",
-                "sudo ./coreos-install -d /dev/sda -c ~/cloud-config.yaml<return>",
-                "sudo reboot<return>"
-            ],
-
-            "ssh_username": "core",
-            "ssh_key_path": "common/coreos",
-
-            "shutdown_command": "sudo shutdown now"
-        }
-    ],
-    "post-processors": [
-        {
-            "type": "compress",
-            "output": "coreos.tar.gz",
-            "keep_input_artifact": true
-        }
-    ]
+  "builders": [
+    {
+      "shutdown_command": "sudo shutdown now",
+      "ssh_key_path": "common/coreos",
+      "ssh_username": "core",
+      "boot_command": [
+        "sudo systemctl stop sshd.socket<return>",
+        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/coreos.pub<return>",
+        "cat coreos.pub > .ssh/authorized_keys<return>",
+        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/coreos-install<return>",
+        "chmod +x ./coreos-install<return>",
+        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/cloud-config.yaml<return>",
+        "sudo ./coreos-install -d /dev/sda -c ~/cloud-config.yaml<return>",
+        "sudo reboot<return>"
+      ],
+      "name": "coreos",
+      "type": "vmware-iso",
+      "headless": false,
+      "iso_url": "http://stable.release.core-os.net/amd64-usr/410.1.0/coreos_production_iso_image.iso",
+      "iso_checksum": "b1adfb0d2f71f4ac95e1b8e122b55bbb741355ec743a1141506eb0ebdc4e7e1317d927e0cd37bfe3d9dfed408a3ac19843c7faefb1b05a03eff21098113267cd",
+      "iso_checksum_type": "sha512",
+      "http_directory": "common",
+      "boot_wait": "30s"
+    }
+  ],
+  "provisioners": [
+    {
+      "destination": "images",
+      "source": "images",
+      "type": "file"
+    },
+    {
+      "inline": "chmod +x images/*.sh",
+      "type": "shell"
+    },
+    {
+      "script": "scripts/enable-docker-containers.sh",
+      "type": "shell"
+    }
+  ]
 }

@@ -2,4 +2,93 @@
 
 hostname: coreos
 ssh_authorized_keys:
-    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKtaFQuj4nvKmEq47SVtIW4AP7MM4Lt4rsafydHsyDgaAZooUqpAU6fBZZ0LeeCCwZ4Cs4/8cAxVlIxqlxa5MoVkFevIGtNsqcF9wyJ/3Y/Gmhjp6grylTZB4qIq/V+IpOQjRKkQxomByUp3A32XE4sZ95qL706V5AJusxmYQAX4mA26KWbYYDhm9e+ZP0yvbJVniDQ7/8DTH45e01QgEJpgi7rvWif6b1UaSEMBE71tKFFmVdqQjFm9GTo6e1nPo5cVSzijWmFdyiiaWKemSUHLpa5YJlH2tbzySMhRuKRoCZkfe0eOqqGFx68Cm8UOWCsZ38Ls2CPmE+Nb81HNmv
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKtaFQuj4nvKmEq47SVtIW4AP7MM4Lt4rsafydHsyDgaAZooUqpAU6fBZZ0LeeCCwZ4Cs4/8cAxVlIxqlxa5MoVkFevIGtNsqcF9wyJ/3Y/Gmhjp6grylTZB4qIq/V+IpOQjRKkQxomByUp3A32XE4sZ95qL706V5AJusxmYQAX4mA26KWbYYDhm9e+ZP0yvbJVniDQ7/8DTH45e01QgEJpgi7rvWif6b1UaSEMBE71tKFFmVdqQjFm9GTo6e1nPo5cVSzijWmFdyiiaWKemSUHLpa5YJlH2tbzySMhRuKRoCZkfe0eOqqGFx68Cm8UOWCsZ38Ls2CPmE+Nb81HNmv
+
+coreos:
+  # All of our docker services are initially disabled (enable: false). We don't want
+  # them to start before the machine is provisioned with the images. If we do start them
+  # before image provisioning, the docker daemon will attempt to download the images,
+  # something we don't want.
+  #
+  # The services are enabled after uploading the images. See template.json.
+  units:
+  - name: docker-mongo.service
+    command: start
+    enable: false
+    content: |
+      [Unit]
+      Description=Mongo Container
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      TimeoutStartSec=0
+      Restart=always
+      RestartSec=10s
+      ExecStartPre=-/usr/bin/docker kill mongo
+      ExecStartPre=-/usr/bin/docker rm mongo
+      ExecStart=/usr/bin/docker run --rm --name mongo -p 27017:27017 mongo:2.6.4
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - name: docker-postgres.service
+    command: start
+    enable: false
+    content: |
+      [Unit]
+      Description=Postgres Container
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      TimeoutStartSec=0
+      Restart=always
+      RestartSec=10s
+      ExecStartPre=-/usr/bin/docker kill postgres
+      ExecStartPre=-/usr/bin/docker rm postgres
+      ExecStart=/usr/bin/docker run --rm --name postgres -p 5432:5432 postgres:9.4
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - name: docker-redis.service
+    command: start
+    enable: false
+    content: |
+      [Unit]
+      Description=Redis Container
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      TimeoutStartSec=0
+      Restart=always
+      RestartSec=10s
+      ExecStartPre=-/usr/bin/docker kill redis
+      ExecStartPre=-/usr/bin/docker rm redis
+      ExecStart=/usr/bin/docker run --rm --name redis -p 6379:6379 redis:2.8.13
+
+      [Install]
+      WantedBy=multi-user.target
+  - name: docker-metarepo.service
+    command: start
+    enable: false
+    content: |
+      [Unit]
+      Description=Metarepo
+      After=docker-postgres.service
+      After=docker-mongo.service
+      Requires=docker-postgres.service
+      Requires=docker-mongo.service
+
+      [Service]
+      TimeoutStartSec=0
+      Restart=always
+      RestartSec=10s
+      ExecStartPre=-/usr/bin/docker kill metarepo
+      ExecStartPre=-/usr/bin/docker rm metarepo
+      ExecStart=/home/core/images/start-metarepo.sh 5756343f648c362e9c5a475e3ba5e0499df7844b.squash
+
+      [Install]
+      WantedBy=multi-user.target

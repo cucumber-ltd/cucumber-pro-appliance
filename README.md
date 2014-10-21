@@ -1,25 +1,29 @@
-# packer-coreos
+# Cucumber Pro Appliance
 
-A template for installing [Core OS][] using [Packer][], with a machine archive
-as it's output.
+This project builds the Cucumber Pro Appliance for [VMWare][] using [Packer][].
+It builds a machine running [Core OS][] with several [Docker][] images pre-installed.
 
 ## Requirements
 
+* [Docker][] >= 1.2.0
 * [Packer][] >= 0.7.1
+* [VMWare][] Fusion >= 7.0.0
 
-## Usage
+## Building
 
-### Building
+Find the `QUAY_TOKEN` for the
+[cucumberltd+appliancebuilder](https://quay.io/organization/cucumberltd/admin?tab=robots&showRobot=cucumberltd%2Bappliancebuilder)
+robot account so that you can pull down our private docker images.
 
-The simplest way is to build a Core OS VM by doing:
+Then build the appliance:
 
 ```sh
-packer build template.json
+QUAY_TOKEN=... make
 ```
 
-This will provide you with a compressed archive of the VM.
+This will provide you with a VM in `output-coreos`
 
-### SSH into the box
+## SSH into the box
 
 First, change permissions on the private key (git won't store this):
 
@@ -29,58 +33,27 @@ chmod 600 common/coreos
 
 The IP address of the machine should display above the login prompt.
 
-```
+```sh
 ssh -i common/coreos core@<IP>
 ```
 
-### Configuration
+## How the build works
 
-Once you have a Core OS image, you need to provide the cluster configuration.
-This is best provided by a ["config drive"][config-drive] image, which contains
-the full `cloud-config` configuration file. See the Core OS docs entry for
-['Using Cloud-Config'][cloud-config].
+* `make` downloads all docker image tarballs to `images` on the host
+* Packer fetches vanilla CoreOS and boots it
+* Packer configures/upgrades CoreOS using `common/coreos-install` that reads `common/cloud-config.yml`
+  * `common/cloud-config.yml` describes the systemd-managed services on CoreOS
+  * All services are initially disabled and will be enabled during provisioning
+  * The `coreos` and `coreos.pub` files are SSH keys for `ssh` into the VM from host
+* Packer provisions the box
+  * Uploading docker image tarballs and scripts from `images` to CoreOS
+  * Runs `scripts/enable-docker-containers.sh` on CoreOS
+    * This loads each docker image tarball into docker
+    * Enables the associated service
+    * Removes the tarball
+* We're done! The VM is in `output-coreos`
 
-Using this example `cloud-config`, which brings up the basic services:
-
-```yaml
-#cloud-config
-
-coreos:
-    etcd:
-        # token for each unique cluster
-        discovery: https://discovery.etcd.io/<token>
-        # ip address for this node
-        addr: 0.0.0.0:4001
-        peer-addr: 0.0.0.0:7001
-    fleet:
-        public-ip: 0.0.0.0   # used for fleetctl ssh command
-    units:
-    - name: etcd.service
-      command: start
-    - name: fleet.service
-      command: start
-```
-
-You should replace the discovery URL and IPs with real ones. And then build
-the disc image:
-
-```sh
-mkdir -p /tmp/new-drive/openstack/latest
-cp cloud-config /tmp/new-drive/openstack/latest/user_data
-mkisofs -R -V config-2 -o configdrive.iso /tmp/new-drive
-rm -r /tmp/new-drive
-```
-
-(`mkisofs` is in Homebrew for OS X under `cdrtools`. An equivalent fork is
-available for Debian/Ubuntu as `genisoimage`. [See here][].)
-
-### Running
-
-The next stage is to import it into your VM host. You also need to mount the
-`configdrive.iso` image from above.
-
-[Core OS]: https://coreos.com
-[Packer]: http://www.packer.io
-[config-drive]: https://github.com/coreos/coreos-cloudinit/blob/master/Documentation/config-drive.md
-[See here]: http://wiki.osdev.org/Mkisofs
-[cloud-config]: https://coreos.com/docs/cluster-management/setup/cloudinit-cloud-config/
+[VMWare]: http://www.vmware.com/
+[Core OS]: https://coreos.com/
+[Docker]: https://www.docker.com/
+[Packer]: http://www.packer.io/
