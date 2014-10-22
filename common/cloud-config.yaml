@@ -13,8 +13,6 @@ coreos:
   # The services are enabled after uploading the images. See template.json.
   units:
   - name: docker-mongo.service
-    command: start
-    enable: false
     content: |
       [Unit]
       Description=Mongo Container
@@ -27,14 +25,12 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill mongo
       ExecStartPre=-/usr/bin/docker rm mongo
-      ExecStart=/usr/bin/docker run --rm --name mongo -p 27017:27017 mongo:2.6.4
+      ExecStart=/usr/bin/docker run --rm --name mongo -p 27017:27017 mongo:2.7.7
 
       [Install]
       WantedBy=multi-user.target
 
   - name: docker-postgres.service
-    command: start
-    enable: false
     content: |
       [Unit]
       Description=Postgres Container
@@ -53,8 +49,6 @@ coreos:
       WantedBy=multi-user.target
 
   - name: docker-redis.service
-    command: start
-    enable: false
     content: |
       [Unit]
       Description=Redis Container
@@ -67,13 +61,11 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill redis
       ExecStartPre=-/usr/bin/docker rm redis
-      ExecStart=/usr/bin/docker run --rm --name redis -p 6379:6379 redis:2.8.13
+      ExecStart=/usr/bin/docker run --rm --name redis -p 6379:6379 redis:2.8.17
 
       [Install]
       WantedBy=multi-user.target
   - name: docker-metarepo.service
-    command: start
-    enable: false
     content: |
       [Unit]
       Description=Metarepo
@@ -94,8 +86,6 @@ coreos:
       WantedBy=multi-user.target
 
   - name: docker-repos.service
-    command: start
-    enable: false
     content: |
       [Unit]
       Description=Repos
