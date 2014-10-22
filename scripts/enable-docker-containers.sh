@@ -7,11 +7,14 @@ set -e pipefail
 # Just print some status
 docker --version
 docker info
+docker images -a
 
 for f in images/*.tar.gz
 do
   echo "Loading $f image into docker"
   docker load < $f
+  # List what we have now...
+  docker images
   name=`basename $f | sed s/.tar.gz$//`
   # This script is defined in cloud-config.yaml
   service=/etc/systemd/system/docker-$name.service
