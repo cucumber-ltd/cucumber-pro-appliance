@@ -92,3 +92,25 @@ coreos:
 
       [Install]
       WantedBy=multi-user.target
+
+  - name: docker-repos.service
+    command: start
+    enable: false
+    content: |
+      [Unit]
+      Description=Repos
+      After=docker-redis.service
+      After=docker-mongo.service
+      Requires=docker-redis.service
+      Requires=docker-mongo.service
+
+      [Service]
+      TimeoutStartSec=0
+      Restart=always
+      RestartSec=10s
+      ExecStartPre=-/usr/bin/docker kill repos
+      ExecStartPre=-/usr/bin/docker rm repos
+      ExecStart=/home/core/images/start-repos.sh 1f46a0f9dde78e29b1708b3660ab4d92a78611a8.squash
+
+      [Install]
+      WantedBy=multi-user.target
