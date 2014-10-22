@@ -10,9 +10,9 @@ POSTGRES_VERSION = 9.4
 REDIS_VERSION = 2.8.17
 
 # This version is a git sha
-METAREPO_VERSION = 5756343f648c362e9c5a475e3ba5e0499df7844b
-REPOS_VERSION = 1f46a0f9dde78e29b1708b3660ab4d92a78611a8
-CUCUMBER_PRO_VERSION = e21cc06370a303f4d64d09d18bbe59a8ae8fdd39
+METAREPO_VERSION = 6d04e8c8b9f1311972e255c24feefcd85c210376
+REPOS_VERSION = 1901ec832fb0978571803670f4808923f048fb1c
+CUCUMBER_PRO_VERSION = e12bbe4c4d73402a3947b93ee9338eb9cd44e9f2
 
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
@@ -23,7 +23,8 @@ images: images/mongo.tar.gz \
 				images/postgres.tar.gz \
 				images/redis.tar.gz \
         images/repos.tar.gz \
-        images/metarepo.tar.gz
+        images/metarepo.tar.gz \
+				images/cucumber-pro.tar.gz
 
 images/mongo.tar.gz:
 	docker pull mongo:$(MONGO_VERSION)
@@ -37,16 +38,25 @@ images/redis.tar.gz:
 	docker pull redis:$(REDIS_VERSION)
 	docker save redis:$(REDIS_VERSION) | gzip > $@
 
-images/metarepo.tar.gz:
+images/metarepo.tar.gz: Makefile
 	$(call pull_squashed_image,metarepo,$(METAREPO_VERSION),$@)
 
-images/repos.tar.gz:
+images/repos.tar.gz: Makefile
 	$(call pull_squashed_image,repos,$(REPOS_VERSION),$@)
 
-images/cucumber-pro.tar.gz:
+images/cucumber-pro.tar.gz: Makefile
 	$(call pull_squashed_image,cucumber-pro,$(CUCUMBER_PRO_VERSION),$@)
 
-output-coreos/packer-coreos.vmx: images
+common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
+	cp common/cloud-config-template.yaml $@
+	perl -pi -e 's/MONGO_VERSION/$(MONGO_VERSION)/g' $@
+	perl -pi -e 's/POSTGRES_VERSION/$(POSTGRES_VERSION)/g' $@
+	perl -pi -e 's/REDIS_VERSION/$(REDIS_VERSION)/g' $@
+	perl -pi -e 's/METAREPO_VERSION/$(METAREPO_VERSION)/g' $@
+	perl -pi -e 's/REPOS_VERSION/$(REPOS_VERSION)/g' $@
+	perl -pi -e 's/CUCUMBER_PRO_VERSION/$(CUCUMBER_PRO_VERSION)/g' $@
+
+output-coreos/packer-coreos.vmx: images common/cloud-config.yaml
 	packer build template.json
 
 clean:
