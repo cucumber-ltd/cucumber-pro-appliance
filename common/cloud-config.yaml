@@ -91,8 +91,10 @@ coreos:
       Description=Repos
       After=docker-redis.service
       After=docker-mongo.service
+      After=docker-metarepo.service
       Requires=docker-redis.service
       Requires=docker-mongo.service
+      Requires=docker-metarepo.service
 
       [Service]
       TimeoutStartSec=0

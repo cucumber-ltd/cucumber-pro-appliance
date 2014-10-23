@@ -6,4 +6,5 @@ DOCKER_TAG=$1
   --env-file `dirname $0`/common.env \
   --link mongo:mongo \
   --link redis:redis \
+  --link metarepo:metarepo \
   quay.io/cucumberltd/repos:$DOCKER_TAG
