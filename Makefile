@@ -10,9 +10,9 @@ POSTGRES_VERSION = 9.4
 REDIS_VERSION = 2.8.17
 
 # This version is a git sha
-METAREPO_VERSION = 6d04e8c8b9f1311972e255c24feefcd85c210376
-REPOS_VERSION = 1901ec832fb0978571803670f4808923f048fb1c
-CUCUMBER_PRO_VERSION = e12bbe4c4d73402a3947b93ee9338eb9cd44e9f2
+METAREPO_VERSION = 0518f27a47e85cd9399d8ed4a6fc67c172b39659
+REPOS_VERSION = c6ccd0ba0b6edf535fc38e4e1d63b28049368f20
+CUCUMBER_PRO_VERSION = 9a99f67f38950707e972bd2ffa67d7e72d5d4ebe
 
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
