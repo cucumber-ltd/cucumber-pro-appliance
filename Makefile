@@ -9,10 +9,10 @@ APPLIANCE_VERSION    = $(shell git rev-parse HEAD)
 
 CUCUMBER_PRO_VERSION = $(shell head versions/cucumber-pro)
 METAREPO_VERSION		 = $(shell head versions/metarepo)
-MONGO_VERSION				 = $(shell head versions/mongo)
+MONGO_VERSION				= $(shell head versions/mongo)
 POSTGRES_VERSION		 = $(shell head versions/postgres)
-REDIS_VERSION				 = $(shell head versions/redis)
-REPOS_VERSION				 = $(shell head versions/repos)
+REDIS_VERSION				= $(shell head versions/redis)
+REPOS_VERSION				= $(shell head versions/repos)
 
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
