@@ -5,6 +5,8 @@
 # and common/cloud-config.yaml
 #
 
+APPLIANCE_VERSION=`git rev-parse HEAD`
+
 MONGO_VERSION = 2.7.7
 POSTGRES_VERSION = 9.4
 REDIS_VERSION = 2.8.17
@@ -59,10 +61,18 @@ common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
 output-coreos/packer-coreos.vmx: images common/cloud-config.yaml
 	packer build template.json
 
+appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).tgz: output-coreos/packer-coreos.vmx
+	mkdir -p appliance
+	tar cvzf $@ output-coreos
+
+publish-appliance: appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION)
+	s3cmd put appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).tgz s3://cucumber-pro-appliance
+.PHONY: publish-appliance
+
 clean:
 	rm -rf output-coreos
 .PHONY: clean
 
 clobber: clean
-	rm -rf images/*.tar.gz
+	rm -rf images/*.tar.gz appliance
 .PHONY: clobber
