@@ -80,7 +80,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill metarepo
       ExecStartPre=-/usr/bin/docker rm metarepo
-      ExecStart=/home/core/images/start-metarepo.sh 6d04e8c8b9f1311972e255c24feefcd85c210376.squash
+      ExecStart=/home/core/images/start-metarepo.sh 8e107238d818ca65632e0ccb9af0162a832e32b9.squash
 
       [Install]
       WantedBy=multi-user.target
@@ -91,10 +91,8 @@ coreos:
       Description=Repos
       After=docker-redis.service
       After=docker-mongo.service
-      After=docker-metarepo.service
       Requires=docker-redis.service
       Requires=docker-mongo.service
-      Requires=docker-metarepo.service
 
       [Service]
       TimeoutStartSec=0
@@ -102,7 +100,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill repos
       ExecStartPre=-/usr/bin/docker rm repos
-      ExecStart=/home/core/images/start-repos.sh 1901ec832fb0978571803670f4808923f048fb1c.squash
+      ExecStart=/home/core/images/start-repos.sh 2c128fc70403731d76ac31785523d2e60b82f783.squash
 
       [Install]
       WantedBy=multi-user.target
@@ -126,7 +124,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill cucumber-pro
       ExecStartPre=-/usr/bin/docker rm cucumber-pro
-      ExecStart=/home/core/images/start-cucumber-pro.sh e12bbe4c4d73402a3947b93ee9338eb9cd44e9f2.squash
+      ExecStart=/home/core/images/start-cucumber-pro.sh e44976e5204f1ea702c730437c842fc29cf5921f.squash
 
       [Install]
       WantedBy=multi-user.target
