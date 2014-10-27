@@ -3,3 +3,4 @@ output-coreos/
 packer_cache/
 .DS_Store
 appliance/
+common/cloud-config.yaml
