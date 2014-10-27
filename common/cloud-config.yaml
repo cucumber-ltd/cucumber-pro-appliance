@@ -25,7 +25,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill mongo
       ExecStartPre=-/usr/bin/docker rm mongo
-      ExecStart=/usr/bin/docker run --rm --name mongo -p 27017:27017 mongo:2.7.7
+      ExecStart=/usr/bin/docker run --rm --name mongo -p 27017:27017 -v /var/lib/mongo/data:/data/db mongo:2.7.7
 
       [Install]
       WantedBy=multi-user.target
@@ -43,7 +43,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill postgres
       ExecStartPre=-/usr/bin/docker rm postgres
-      ExecStart=/usr/bin/docker run --rm --name postgres -p 5432:5432 postgres:9.4
+      ExecStart=/usr/bin/docker run --rm --name postgres -p 5432:5432 -v /var/lib/postgresql/data:/var/lib/postgresql/data postgres:9.4
 
       [Install]
       WantedBy=multi-user.target
@@ -61,7 +61,7 @@ coreos:
       RestartSec=10s
       ExecStartPre=-/usr/bin/docker kill redis
       ExecStartPre=-/usr/bin/docker rm redis
-      ExecStart=/usr/bin/docker run --rm --name redis -p 6379:6379 redis:2.8.17
+      ExecStart=/usr/bin/docker run --rm --name redis -p 6379:6379 -v /var/lib/redis/data:/data redis:2.8.17 redis-server --appendonly yes
 
       [Install]
       WantedBy=multi-user.target

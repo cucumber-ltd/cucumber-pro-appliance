@@ -35,6 +35,10 @@
       "type": "shell"
     },
     {
+      "script": "scripts/create-data-directories.sh",
+      "type": "shell"
+    },
+    {
       "script": "scripts/enable-docker-containers.sh",
       "type": "shell"
     }
