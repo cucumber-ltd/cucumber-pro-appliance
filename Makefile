@@ -7,46 +7,44 @@
 
 APPLIANCE_VERSION=`git rev-parse HEAD`
 
-MONGO_VERSION = 2.7.7
-POSTGRES_VERSION = 9.4
-REDIS_VERSION = 2.8.17
-
-# This version is a git sha
-METAREPO_VERSION = 8e107238d818ca65632e0ccb9af0162a832e32b9
-REPOS_VERSION = 2c128fc70403731d76ac31785523d2e60b82f783
-CUCUMBER_PRO_VERSION = e44976e5204f1ea702c730437c842fc29cf5921f
+CUCUMBER_PRO_VERSION = `cat versions/cucumber-pro`
+METAREPO_VERSION     = `cat versions/metarepo`
+MONGO_VERSION        = `cat versions/mongo`
+POSTGRES_VERSION     = `cat versions/postgres`
+REDIS_VERSION        = `cat versions/redis`
+REPOS_VERSION        = `cat versions/repos`
 
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
 
 main: output-coreos/packer-coreos.vmx
 
-images: images/mongo.tar.gz \
+images: images/cucumber-pro.tar.gz \
+				images/metarepo.tar.gz \
+				images/mongo.tar.gz \
 				images/postgres.tar.gz \
 				images/redis.tar.gz \
-        images/repos.tar.gz \
-        images/metarepo.tar.gz \
-				images/cucumber-pro.tar.gz
+        images/repos.tar.gz
 
-images/mongo.tar.gz:
+images/mongo.tar.gz: versions/mongo
 	docker pull mongo:$(MONGO_VERSION)
 	docker save mongo:$(MONGO_VERSION) | gzip  > $@
 
-images/postgres.tar.gz:
+images/postgres.tar.gz: versions/postgres
 	docker pull postgres:$(POSTGRES_VERSION)
 	docker save postgres:$(POSTGRES_VERSION) | gzip  > $@
 
-images/redis.tar.gz:
+images/redis.tar.gz: versions/redis
 	docker pull redis:$(REDIS_VERSION)
 	docker save redis:$(REDIS_VERSION) | gzip > $@
 
-images/metarepo.tar.gz: Makefile
+images/metarepo.tar.gz: versions/metarepo
 	$(call pull_squashed_image,metarepo,$(METAREPO_VERSION),$@)
 
-images/repos.tar.gz: Makefile
+images/repos.tar.gz: versions/repos
 	$(call pull_squashed_image,repos,$(REPOS_VERSION),$@)
 
-images/cucumber-pro.tar.gz: Makefile
+images/cucumber-pro.tar.gz: versions/cucumber-pro
 	$(call pull_squashed_image,cucumber-pro,$(CUCUMBER_PRO_VERSION),$@)
 
 common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
