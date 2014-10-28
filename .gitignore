@@ -1,6 +1,5 @@
 *.tar.gz
-output-coreos/
+cucumber-pro-appliance/
 packer_cache/
 .DS_Store
-appliance/
 common/cloud-config.yaml

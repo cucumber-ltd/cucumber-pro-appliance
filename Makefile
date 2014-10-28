@@ -8,16 +8,16 @@
 APPLIANCE_VERSION    = $(shell git rev-parse HEAD)
 
 CUCUMBER_PRO_VERSION = $(shell head versions/cucumber-pro)
-METAREPO_VERSION		 = $(shell head versions/metarepo)
-MONGO_VERSION				= $(shell head versions/mongo)
-POSTGRES_VERSION		 = $(shell head versions/postgres)
-REDIS_VERSION				= $(shell head versions/redis)
-REPOS_VERSION				= $(shell head versions/repos)
+METAREPO_VERSION     = $(shell head versions/metarepo)
+MONGO_VERSION        = $(shell head versions/mongo)
+POSTGRES_VERSION     = $(shell head versions/postgres)
+REDIS_VERSION        = $(shell head versions/redis)
+REPOS_VERSION        = $(shell head versions/repos)
 
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
 
-main: output-coreos/packer-coreos.vmx
+main: cucumber-pro-appliance/cucumber-pro-appliance.vmx
 
 images: images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz \
 				images/metarepo-$(METAREPO_VERSION).tar.gz \
@@ -47,7 +47,7 @@ images/repos-$(REPOS_VERSION).tar.gz: versions/repos
 images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz: versions/cucumber-pro
 	$(call pull_squashed_image,cucumber-pro,$(CUCUMBER_PRO_VERSION),$@)
 
-common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
+common/cloud-config.yaml: common/cloud-config-template.yaml
 	cp common/cloud-config-template.yaml $@
 	perl -pi -e 's/MONGO_VERSION/$(MONGO_VERSION)/g' $@
 	perl -pi -e 's/POSTGRES_VERSION/$(POSTGRES_VERSION)/g' $@
@@ -56,19 +56,18 @@ common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
 	perl -pi -e 's/REPOS_VERSION/$(REPOS_VERSION)/g' $@
 	perl -pi -e 's/CUCUMBER_PRO_VERSION/$(CUCUMBER_PRO_VERSION)/g' $@
 
-output-coreos/packer-coreos.vmx: images common/cloud-config.yaml
+cucumber-pro-appliance/cucumber-pro-appliance.vmx: images common/cloud-config.yaml
 	packer build template.json
 
-appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).tgz: output-coreos/packer-coreos.vmx
-	mkdir -p appliance
-	tar cvzf $@ output-coreos
+cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz: cucumber-pro-appliance/cucumber-pro-appliance.vmx
+	tar cvzf $@ cucumber-pro-appliance
 
-publish-appliance: appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).tgz
-	s3cmd put appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).tgz s3://cucumber-pro-appliance
+publish-appliance: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz
+	s3cmd put cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz s3://cucumber-pro-appliance
 .PHONY: publish-appliance
 
 clean:
-	rm -rf output-coreos
+	rm -rf cucumber-pro-appliance
 .PHONY: clean
 
 clobber: clean
