@@ -15,7 +15,8 @@ do
   docker load < $f
   # List what we have now...
   docker images
-  name=`basename $f | sed s/.tar.gz$//`
+  # extract service name - strip version and extension from filename
+  name=`basename $f | sed -E s/-[a-f0-9\.]\+\.tar\.gz$//`
   # This script is defined in cloud-config.yaml
   service=/etc/systemd/system/docker-$name.service
   # Enable the service now that the docker image it will start is loaded into docker

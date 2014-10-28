@@ -19,32 +19,32 @@ pull_squashed_image = \
 
 main: output-coreos/packer-coreos.vmx
 
-images: images/cucumber-pro.tar.gz \
-				images/metarepo.tar.gz \
-				images/mongo.tar.gz \
-				images/postgres.tar.gz \
-				images/redis.tar.gz \
-        images/repos.tar.gz
+images: images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz \
+				images/metarepo-$(METAREPO_VERSION).tar.gz \
+				images/mongo-$(MONGO_VERSION).tar.gz \
+				images/postgres-$(POSTGRES_VERSION).tar.gz \
+				images/redis-$(REDIS_VERSION).tar.gz \
+        images/repos-$(REPOS_VERSION).tar.gz
 
-images/mongo.tar.gz: versions/mongo
+images/mongo-$(MONGO_VERSION).tar.gz: versions/mongo
 	docker pull mongo:$(MONGO_VERSION)
 	docker save mongo:$(MONGO_VERSION) | gzip  > $@
 
-images/postgres.tar.gz: versions/postgres
+images/postgres-$(POSTGRES_VERSION).tar.gz: versions/postgres
 	docker pull postgres:$(POSTGRES_VERSION)
 	docker save postgres:$(POSTGRES_VERSION) | gzip  > $@
 
-images/redis.tar.gz: versions/redis
+images/redis-$(REDIS_VERSION).tar.gz: versions/redis
 	docker pull redis:$(REDIS_VERSION)
 	docker save redis:$(REDIS_VERSION) | gzip > $@
 
-images/metarepo.tar.gz: versions/metarepo
+images/metarepo-$(METAREPO_VERSION).tar.gz: versions/metarepo
 	$(call pull_squashed_image,metarepo,$(METAREPO_VERSION),$@)
 
-images/repos.tar.gz: versions/repos
+images/repos-$(REPOS_VERSION).tar.gz: versions/repos
 	$(call pull_squashed_image,repos,$(REPOS_VERSION),$@)
 
-images/cucumber-pro.tar.gz: versions/cucumber-pro
+images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz: versions/cucumber-pro
 	$(call pull_squashed_image,cucumber-pro,$(CUCUMBER_PRO_VERSION),$@)
 
 common/cloud-config.yaml: common/cloud-config-template.yaml Makefile
