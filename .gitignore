@@ -1,5 +1,6 @@
 *.tar.gz
-cucumber-pro-appliance/
+cucumber-pro-appliance*
+Gemfile.lock
 packer_cache/
 .DS_Store
 common/cloud-config.yaml

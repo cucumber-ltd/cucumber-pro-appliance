@@ -62,14 +62,21 @@ cucumber-pro-appliance/cucumber-pro-appliance.vmx: images common/cloud-config.ya
 cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz: cucumber-pro-appliance/cucumber-pro-appliance.vmx
 	tar cvzf $@ cucumber-pro-appliance
 
-publish-appliance: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz
+cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz
 	s3cmd put cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz s3://cucumber-pro-appliance
-.PHONY: publish-appliance
+	touch cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded
+
+publish: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded Gemfile.lock
+	@echo `./generate-download-url cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz`
+.PHONY: publish
+
+Gemfile.lock: Gemfile
+	bundle install
 
 clean:
-	rm -rf cucumber-pro-appliance
+	rm -rf cucumber-pro-appliance*
 .PHONY: clean
 
 clobber: clean
-	rm -rf images/*.tar.gz appliance
+	git clean -dfx
 .PHONY: clobber

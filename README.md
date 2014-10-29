@@ -22,7 +22,30 @@ Then build the appliance:
 QUAY_TOKEN=... make
 ```
 
-This will provide you with a VM in `output-coreos`
+This will provide you with a VM in `cucumber-pro-appliance`
+
+## Publish appliance to S3
+
+Publishing is done with [s3cmd](http://s3tools.org/s3cmd) and generation of
+the download URL uses [the official AWS SDK Ruby gem](http://aws.amazon.com/sdk-for-ruby/). run
+In order for these to work you have to set up your S3 credentials in:
+
+* `~/.s3cfg` (run `s3cmd --configure` to create this file)
+* `~/.aws/credentials` (see [this link](http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-setup.html#set-up-creds))
+
+Alternatively you can use environment variables:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+
+```
+QUAY_TOKEN=... make publish
+```
+
+This will upload the appliance `.tar.gz` to S3 and print out a download link
+that is valid for 7 days.
+
+To regenerate the download URL, just run `make publish` again.
 
 ## SSH into the box
 

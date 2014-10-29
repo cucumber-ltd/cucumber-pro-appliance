@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'aws-sdk'
+
+if ARGV[0].nil?
+  STDERR.puts "\e[#31mUsage: #{__FILE__} FILE\e[#0m"
+  exit 1
+end
+
+s3 = AWS::S3.new
+bucket = s3.buckets['cucumber-pro-appliance']
+ob = bucket.objects[ARGV[0]]
+
+presign = AWS::S3::PresignV4.new(ob)
+one_week = 60 * 60 * 24 * 7
+expires = Time.now.utc + one_week
+url = presign.presign(:read, expires: expires.to_i, secure: true)
+
+puts "\e[#32m#{url}\e[#0m"
