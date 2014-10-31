@@ -9,7 +9,7 @@ It builds a machine running [Core OS][] with several [Docker][] images pre-insta
   * On OS X, use https://github.com/boot2docker/osx-installer/releases
 * [Packer][] >= 0.7.1
 * [VMWare Fusion][] >= 7.0.0
-* [VMWare OVF Tool][] >= 7.0.0
+* [VMWare OVF Tool][] >= 4.0.0
 
 The `ovftool` command isn't on your `PATH` by default - you should add it:
 

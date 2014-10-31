@@ -70,8 +70,21 @@ cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded: cucumber-pro-applia
 	s3cmd put $< s3://cucumber-pro-appliance
 	touch $@
 
-publish: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded Gemfile.lock
+cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz
+	echo "# SHA512 HASH" > $@
+	echo `shasum -a 512 $<` >> $@
+
+cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS.uploaded: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS
+	s3cmd put $< s3://cucumber-pro-appliance
+	touch $@
+
+publish: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS.uploaded Gemfile.lock
+  @echo
+	@echo Appliance:
 	@echo `./generate-download-url cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz`
+	@echo
+	@echo Appliance Checksums:
+	@echo `./generate-download-url cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS`
 .PHONY: publish
 
 Gemfile.lock: Gemfile
