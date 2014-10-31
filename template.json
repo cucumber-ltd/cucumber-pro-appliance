@@ -17,7 +17,7 @@
       "type": "vmware-iso",
       "name": "cucumber-pro-appliance",
       "vm_name": "cucumber-pro-appliance",
-      "output_directory": "cucumber-pro-appliance",
+      "output_directory": "vmx",
       "headless": false,
       "iso_url": "http://stable.release.core-os.net/amd64-usr/444.5.0/coreos_production_iso_image.iso",
       "iso_checksum": "8104fa2138267687cb07ec39d0110066ded6141d916b4539909218719e611dbfb8d73837a155bf1dfbe0dea0f58ffd5603a12af2f022b7dedcc3a94705572bb4",

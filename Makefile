@@ -17,7 +17,7 @@ REPOS_VERSION        = $(shell head versions/repos)
 pull_squashed_image = \
 	curl -L -f https://cucumberltd+appliancebuilder:$(QUAY_TOKEN)@quay.io/c1/squash/cucumberltd/$(1)/$(2) -o $(3)
 
-main: cucumber-pro-appliance/cucumber-pro-appliance.vmx
+main: cucumber-pro-appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).ovf
 
 images: images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz \
 				images/metarepo-$(METAREPO_VERSION).tar.gz \
@@ -56,15 +56,19 @@ common/cloud-config.yaml: common/cloud-config-template.yaml
 	perl -pi -e 's/REPOS_VERSION/$(REPOS_VERSION)/g' $@
 	perl -pi -e 's/CUCUMBER_PRO_VERSION/$(CUCUMBER_PRO_VERSION)/g' $@
 
-cucumber-pro-appliance/cucumber-pro-appliance.vmx: images common/cloud-config.yaml
+vmx/cucumber-pro-appliance.vmx: images common/cloud-config.yaml
 	packer build template.json
 
-cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz: cucumber-pro-appliance/cucumber-pro-appliance.vmx
-	tar cvzf $@ cucumber-pro-appliance
+cucumber-pro-appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).ovf: vmx/cucumber-pro-appliance.vmx
+	mkdir -p `dirname $@`
+	ovftool $< $@
+
+cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz: cucumber-pro-appliance/cucumber-pro-appliance-$(APPLIANCE_VERSION).ovf
+	tar cvzf $@ `dirname $<`
 
 cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz
-	s3cmd put cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz s3://cucumber-pro-appliance
-	touch cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded
+	s3cmd put $< s3://cucumber-pro-appliance
+	touch $@
 
 publish: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded Gemfile.lock
 	@echo `./generate-download-url cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz`
@@ -74,7 +78,7 @@ Gemfile.lock: Gemfile
 	bundle install
 
 clean:
-	rm -rf cucumber-pro-appliance*
+	rm -rf cucumber-pro-appliance* vmx
 .PHONY: clean
 
 clobber: clean

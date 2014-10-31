@@ -2,5 +2,6 @@
 cucumber-pro-appliance*
 Gemfile.lock
 packer_cache/
+vmx/
 .DS_Store
 common/cloud-config.yaml

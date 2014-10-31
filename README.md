@@ -8,7 +8,15 @@ It builds a machine running [Core OS][] with several [Docker][] images pre-insta
 * [Docker][] >= 1.2.0
   * On OS X, use https://github.com/boot2docker/osx-installer/releases
 * [Packer][] >= 0.7.1
-* [VMWare][] Fusion >= 7.0.0
+* [VMWare Fusion][] >= 7.0.0
+* [VMWare OVF Tool][] >= 7.0.0
+
+The `ovftool` command isn't on your `PATH` by default - you should add it:
+
+```sh
+export PATH=$PATH:/Applications/VMware\ OVF\ Tool
+ovftool --version
+```
 
 ## Building
 
@@ -77,7 +85,8 @@ ssh -i common/coreos core@<IP>
     * Removes the tarball
 * We're done! The VM is in `output-coreos`
 
-[VMWare]: http://www.vmware.com/
+[VMWare Fusion]: http://www.vmware.com/uk/products/fusion
+[VMWare OVF Tool]: https://www.vmware.com/support/developer/ovf/
 [Core OS]: https://coreos.com/
 [Docker]: https://www.docker.com/
 [Packer]: http://www.packer.io/
