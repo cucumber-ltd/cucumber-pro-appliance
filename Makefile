@@ -79,7 +79,7 @@ cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS.uploaded: cucumber-pr
 	touch $@
 
 publish: cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.uploaded cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz.DIGESTS.uploaded Gemfile.lock
-  @echo
+	@echo
 	@echo Appliance:
 	@echo `./generate-download-url cucumber-pro-appliance-$(APPLIANCE_VERSION).tar.gz`
 	@echo
