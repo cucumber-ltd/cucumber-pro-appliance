@@ -5,6 +5,8 @@
 # and common/cloud-config.yaml
 #
 
+VERSION_FILES        = $(shell find versions -type f -name "*")
+
 APPLIANCE_VERSION    = $(shell git rev-parse HEAD)
 
 CUCUMBER_PRO_VERSION = $(shell head versions/cucumber-pro)
@@ -47,7 +49,7 @@ images/repos-$(REPOS_VERSION).tar.gz: versions/repos
 images/cucumber-pro-$(CUCUMBER_PRO_VERSION).tar.gz: versions/cucumber-pro
 	$(call pull_squashed_image,cucumber-pro,$(CUCUMBER_PRO_VERSION),$@)
 
-common/cloud-config.yaml: common/cloud-config-template.yaml
+common/cloud-config.yaml: common/cloud-config-template.yaml $(VERSION_FILES)
 	cp common/cloud-config-template.yaml $@
 	perl -pi -e 's/MONGO_VERSION/$(MONGO_VERSION)/g' $@
 	perl -pi -e 's/POSTGRES_VERSION/$(POSTGRES_VERSION)/g' $@
