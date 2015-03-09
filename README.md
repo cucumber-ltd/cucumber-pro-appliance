@@ -1,7 +1,13 @@
 # Cucumber Pro Appliance
 
-This project builds the Cucumber Pro Appliance for [VMWare][] using [Packer][].
+This project builds the Cucumber Pro Appliance for [VMWare]() using [Packer][].
 It builds a machine running [Core OS][] with several [Docker][] images pre-installed.
+
+## Please note
+
+While we have open-sourced the build scripts for the appliance, the docker images for Cucumber Pro itself are only available if you purchase an appliance license from Cucumber Ltd.
+
+The Cucumber Pro appliance is still in beta. To apply to be part of the beta programme, please [fill out this form](https://cucumber.typeform.com/to/biFMHz).
 
 ## Requirements
 
